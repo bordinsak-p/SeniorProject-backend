@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const path = require("path");
-const fs = require("fs");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const secretKey = require("../config/token.config.json");
@@ -14,7 +12,8 @@ const db = require("../models");
 
 // ================ register ================
 router.post("/register", async (req, res) => {
-  const hashPassword = await bcrypt.hash(req.body.password, 10);
+  const salt = await bcrypt.genSalt(10);
+  const hashPassword = await bcrypt.hash(req.body.password, salt);
 
   const userBean = {
     firstname: req.body.firstname,
@@ -64,7 +63,7 @@ router.post("/login", async (req, res) => {
     if (!isValidPassword)
       return res.status(401).json({ message: "รหัสผ่านไม่ถูกต้อง" });
 
-    // check username in db 
+    // check username in db
     const isValidUsername = await db.Users.findOne({
       where: { username: user["username"] },
     });

@@ -117,7 +117,7 @@ router.delete("/delEquiment/:id", auth, async (req, res) => {
             }
         })
 
-        if (!query) return res.status(404).json({ message: "ไม่พบข้อมูลสินค้า" });
+        if (!query) return res.status(404).json({ success: false, message: "ไม่พบข้อมูลครุภัณฑ์" });
 
         if (query.image) {
             await fs.unlink(path.join(__dirname, "../images", query.image), (err) => {
@@ -136,13 +136,13 @@ router.delete("/delEquiment/:id", auth, async (req, res) => {
         })
 
         if (result === 1) {
-            return res.status(200).json({ success: true, message: "ลบข้อมูลสำเร็จ" });
+            return res.status(204).json({ success: true, message: "ลบข้อมูลสำเร็จ" });
         } else {
             return res.status(404).json({ success: false, message: "ไม่พบข้อมูลสินค้า" });
         }
 
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({ success: false, message: "ไม่พบข้อมูลครุภัณฑ์", error: error.message });
     }
 });
 

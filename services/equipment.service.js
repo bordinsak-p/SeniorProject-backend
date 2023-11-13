@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
 const db = require("../models");
-const multerConfig = require("../services/multer.config");
+const multerConfig = require("./multer.config");
 const upload = multer(multerConfig.config).single(multerConfig.keyUpload);
 
 module.exports = class ShareServices {

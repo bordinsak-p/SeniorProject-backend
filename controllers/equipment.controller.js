@@ -5,7 +5,7 @@ const db = require("../models");
 const auth = require("../middleware/auth.middleware");
 const multerConfig = require("../services/multer.config");
 const upload = multer(multerConfig.config).single(multerConfig.keyUpload);
-const shareServices = require('../services/share.service')
+const shareServices = require('../services/equipment.service')
 
 router.get("/getEquiment", auth, async (req, res) => {
     try {

@@ -20,19 +20,23 @@ module.exports = class ShareServices {
                 /*
             */
 
+            // console.log("ไฟล์เก่า :",data.image);
+
             if (req.file) {
                 if (data.image) {
-                    fs.unlink(path.join(__dirname, "../images", data.image), (err) => {
+                    await fs.unlink(path.join(__dirname, "../images", data.image), (err) => {
                         if (err) {
-                            throw err
+                            console.log("ไม่สามารถลบไฟล์ได้ :",err); 
                         } else {
                             console.log("ลบไฟล์สำเร็จ");
                         }
                     })
 
-                    data.image = req.file.filename
+                    // data.image = req.file.filename
                 }
             }
+
+            // console.log("ไฟล์ใหม่ :",data.image);
 
             try {
                 const [updLocation] = await db.Locations.update({

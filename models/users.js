@@ -28,11 +28,8 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Users',
     underscored: true,
     underscoreAll: true,
-    freezeTableName: true,
     createdAt: "created_at",
     updatedAt: "updated_at"
   });
-  // แก้ sequlize auto field id
-  Users.removeAttribute('id');
   return Users;
 };

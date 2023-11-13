@@ -14,7 +14,7 @@ app.use(cors({
 }))
 
 // route
-app.use(require('./controllers/users.controller'))
+app.use(require('./controllers/auth_users.controller'))
 app.use(require('./controllers/equipment.controller'))
 
 // start on port

@@ -24,11 +24,13 @@ module.exports = class ShareServices {
                 if (data.image) {
                     fs.unlink(path.join(__dirname, "../images", data.image), (err) => {
                         if (err) {
-                            throw err   
+                            throw err
                         } else {
                             console.log("ลบไฟล์สำเร็จ");
                         }
                     })
+
+                    data.image = req.file.filename
                 }
             }
 

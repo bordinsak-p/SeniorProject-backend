@@ -26,7 +26,7 @@ module.exports = class ShareServices {
                 if (data.image) {
                     await fs.unlink(path.join(__dirname, "../images", data.image), (err) => {
                         if (err) {
-                            console.log("ไม่สามารถลบไฟล์ได้ :",err); 
+                            console.log("ไม่สามารถลบไฟล์ได้ :", err);
                         } else {
                             console.log("ลบไฟล์สำเร็จ");
                         }
@@ -58,7 +58,7 @@ module.exports = class ShareServices {
                     where: {
                         id: data.id
                     }
-                })
+                }, { transaction });
 
                 // Commit transaction
                 await transaction.commit();

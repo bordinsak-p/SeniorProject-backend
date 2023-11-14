@@ -14,8 +14,15 @@ app.use(cors({
 }))
 
 // route
+// authen
 app.use(require('./controllers/auth_users.controller'))
+
+// equipemnt
 app.use(require('./controllers/equipment.controller'))
+
+// repairs
+app.use(require('./controllers/repairs.controller'))
+
 
 // start on port
 const PORT = process.env.PORT || 8080

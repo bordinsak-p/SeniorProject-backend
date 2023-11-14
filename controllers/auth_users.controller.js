@@ -15,7 +15,7 @@ router.post("/register", async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashPassword = await bcrypt.hash(req.body.password, salt);
 
-  const userBean = {
+  const setUsersData = {
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     email: req.body.email,
@@ -25,7 +25,7 @@ router.post("/register", async (req, res) => {
   };
 
   const haveEmail = await db.Users.findOne({
-    where: { email: userBean.email },
+    where: { email: setUsersData.email },
   });
   if (haveEmail)
     return res
@@ -33,7 +33,7 @@ router.post("/register", async (req, res) => {
       .json({ success: false, message: "อีเมลถูกใช้งานแล้ว" });
 
   try {
-    const result = await db.Users.create(userBean);
+    const result = await db.Users.create(setUsersData);
     res.status(201).json({ success: true, result });
   } catch (error) {
     res.status(500).json({

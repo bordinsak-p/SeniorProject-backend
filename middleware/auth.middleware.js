@@ -2,28 +2,31 @@ const jwt = require("jsonwebtoken");
 const secretKey = require("../config/token.config.json");
 
 module.exports = function authenticateToken(req, res, next) {
-  const authHeader = req.header("Authorization");
+    const authHeader = req.header("Authorization");
 
-  // ตรวจสอบว่ามี Authorization header หรือไม่
-  if (!authHeader) {
-      return res.status(401).json({ success: false, message: "ไม่สามารถเข้าถึงข้อมูลได้" });
-  }
+    // ตรวจสอบว่ามี Authorization header หรือไม่
+    if (!authHeader) {
+        return res.status(401).json({ success: false, message: "ไม่สามารถเข้าถึงข้อมูลได้" });
+    }
 
-  // แยก Authorization header เพื่อดึง token ออกมา
-  const [bearer, token] = authHeader.split(' ');
+    // แยก Authorization header เพื่อดึง token ออกมา
+    const [bearer, token] = authHeader.split(' ');
 
-  // ตรวจสอบว่าใช้ schema Bearer หรือไม่
-  if (!bearer || bearer.toLowerCase() !== 'bearer' || !token) {
-      return res.status(401).json({ success: false, message: "รูปแบบ Authorization ไม่ถูกต้อง" });
-  }
+    // ตรวจสอบว่าใช้ schema Bearer หรือไม่
+    if (!bearer || bearer.toLowerCase() !== 'bearer' || !token) {
+        return res.status(401).json({ success: false, message: "รูปแบบ Authorization ไม่ถูกต้อง" });
+    }
 
-  // ตรวจสอบ token โดยใช้ jwt.verify
-  jwt.verify(token, secretKey['secretKey'], (err, user) => {
-      if (err) {
-          return res.status(403).json({ success: false, message: "ไม่สามารถเข้าสู่ระบบได้ ติดต่อผู้ดูแลระบบ" });
-      }
+    // ตรวจสอบ token โดยใช้ jwt.verify
+    jwt.verify(token, secretKey['secretKey'], (err, user) => {
+        if (err) {
+            return res.status(403).json({ success: false, message: "ไม่สามารถเข้าสู่ระบบได้ ติดต่อผู้ดูแลระบบ" });
+        }
 
-      req.user = user;
-      next();
-  });
+        req.user = user;
+
+        console.log(req.user);
+
+        next();
+    });
 }

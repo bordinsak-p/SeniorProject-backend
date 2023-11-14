@@ -120,7 +120,7 @@ router.delete("/delEquiment/:id", auth, async (req, res) => {
         if (!query) return res.status(404).json({ success: false, message: "ไม่พบข้อมูลครุภัณฑ์" });
 
         if (query.image) {
-            await fs.unlink(path.join(__dirname, "../images", query.image), (err) => {
+            fs.unlink(path.join(__dirname, "../images", query.image), (err) => {
                 if (err) {
                     console.log("ไม่สามารถลบไฟล์ได้ :", err);
                 } else {
@@ -128,7 +128,7 @@ router.delete("/delEquiment/:id", auth, async (req, res) => {
                 }
             })
         }
-
+ 
         const result = await db.Equiments.destroy({
             where: {
                 id: req.params.id,

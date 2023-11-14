@@ -24,7 +24,7 @@ module.exports = class ShareServices {
 
             if (req.file) {
                 if (data.image) {
-                    await fs.unlink(path.join(__dirname, "../images", data.image), (err) => {
+                    fs.unlink(path.join(__dirname, "../images", data.image), (err) => {
                         if (err) {
                             console.log("ไม่สามารถลบไฟล์ได้ :", err);
                         } else {
@@ -39,7 +39,8 @@ module.exports = class ShareServices {
             // console.log("ไฟล์ใหม่ :",data.image);
 
             try {
-                const [updLocation] = await db.Locations.update({
+                // update table location
+                await db.Locations.update({
                     location_name: locationname,
                     branch_info: branchinfo,
                     room_number: roomnumber
@@ -49,6 +50,7 @@ module.exports = class ShareServices {
                     }
                 }, { transaction });
 
+                // update table equiment
                 const [updEequipment] = await db.Equiments.update({
                     equiment_name: equimentname,
                     description: description,

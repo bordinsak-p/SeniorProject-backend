@@ -9,7 +9,7 @@ module.exports = class ShareServices {
     checkImageAndUpdate(req, res, data) {
         upload(req, res, async (next) => {
             const transaction = await db.sequelize.transaction();
-            const { locationname, branchinfo, roomnumber, equimentname, description } = req.body
+            const { locationname, branchinfo, roomnumber, equipmentname, description } = req.body
 
             if (next instanceof multer.MulterError) {
                 console.log(`error: ${JSON.stringify(next)}`);
@@ -51,8 +51,8 @@ module.exports = class ShareServices {
                 }, { transaction });
 
                 // update table equiment
-                const [updEequipment] = await db.Equiments.update({
-                    equiment_name: equimentname,
+                const [updEequipment] = await db.Equipments.update({
+                    equipment_name: equipmentname,
                     description: description,
                     image: req.file ? req.file.filename : undefined,
                     buget_year: new Date(),
@@ -66,7 +66,7 @@ module.exports = class ShareServices {
                 await transaction.commit();
 
                 if (updEequipment > 0) {
-                    const resultUpd = await db.Equiments.findByPk(
+                    const resultUpd = await db.Equipments.findByPk(
                         data.id
                     );
                     res.status(200).json({ success: true, message: "แก้ไขข้อมูลสำเร็จ", results: resultUpd })

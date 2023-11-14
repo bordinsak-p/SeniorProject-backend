@@ -7,15 +7,15 @@ const multerConfig = require("../services/multer.config");
 const path = require("path");
 const fs = require("fs");
 const upload = multer(multerConfig.config).single(multerConfig.keyUpload);
-const shareServices = require('../services/equipment.service')
+const equipment = require('../services/equipment.service')
 
-router.get("/getEquiment", auth, async (req, res) => {
+router.get("/getEquipment", auth, async (req, res) => {
     try {
 
         let offset = 10;
         let limit = 5;
 
-        const { rows, count } = await db.Equiments.findAndCountAll({
+        const { rows, count } = await db.Equipments.findAndCountAll({
             order: [
                 ['id', 'DESC'],
             ]
@@ -28,10 +28,10 @@ router.get("/getEquiment", auth, async (req, res) => {
     }
 });
 
-router.get("/getEquimentForPrm/:id", auth, async (req, res) => {
+router.get("/getEquipmentForPrm/:id", auth, async (req, res) => {
 
     try {
-        const result = await db.Equiments.findOne({
+        const result = await db.Equipments.findOne({
             where: {
                 id: req.params.id
             }
@@ -47,14 +47,14 @@ router.get("/getEquimentForPrm/:id", auth, async (req, res) => {
     }
 });
 
-router.post("/addEquiment", auth, async (req, res) => {
+router.post("/addEquipment", auth, async (req, res) => {
     upload(req, res, async (next) => {
         if (next instanceof multer.MulterError) {
             console.log(`error: ${JSON.stringify(next)}`);
             return res.status(500).json({ message: next });
         }
 
-        const { locationname, branchinfo, roomnumber, equimentname, description } = req.body;
+        const { locationname, branchinfo, roomnumber, equipmentname, description } = req.body;
 
         const transaction = await db.sequelize.transaction();
 
@@ -65,8 +65,8 @@ router.post("/addEquiment", auth, async (req, res) => {
                 room_number: roomnumber
             }, { transaction });
 
-            const equ = await db.Equiments.create({
-                equiment_name: equimentname,
+            const equ = await db.Equipments.create({
+                equipment_name: equipmentname,
                 location_id: loc["dataValues"].id,
                 description: description,
                 image: req.file ? req.file.filename : undefined,
@@ -88,10 +88,10 @@ router.post("/addEquiment", auth, async (req, res) => {
     });
 });
 
-router.put("/editEquiment/:id", auth, async (req, res) => {
-    const service = new shareServices();
+router.put("/editEquipment/:id", auth, async (req, res) => {
+    const service = new equipment();
     try {
-        const data = await db.Equiments.findOne({
+        const data = await db.Equipments.findOne({
             where: {
                 id: req.params.id
             }
@@ -109,9 +109,9 @@ router.put("/editEquiment/:id", auth, async (req, res) => {
     }
 });
 
-router.delete("/delEquiment/:id", auth, async (req, res) => {
+router.delete("/delEquipment/:id", auth, async (req, res) => {
     try {
-        const query = await db.Equiments.findOne({
+        const query = await db.Equipments.findOne({
             where: {
                 id: req.params.id
             }
@@ -129,7 +129,7 @@ router.delete("/delEquiment/:id", auth, async (req, res) => {
             })
         }
  
-        const result = await db.Equiments.destroy({
+        const result = await db.Equipments.destroy({
             where: {
                 id: req.params.id,
             }

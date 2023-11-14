@@ -3,24 +3,24 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Equiments extends Model {
+  class Equipments extends Model {
     static associate(models) {
-      Equiments.belongsTo(models.Locations, { foreignKey: 'id', targetKey: 'id' });
+      Equipments.belongsTo(models.Locations, { foreignKey: 'id', targetKey: 'id' });
     }
   }
-  Equiments.init({
-    equiment_name: DataTypes.STRING,
+  Equipments.init({
+    equipment_name: DataTypes.STRING,
     location_id: DataTypes.INTEGER,
     description: DataTypes.STRING,
     image: DataTypes.STRING,
     buget_year: DataTypes.DATE,
   }, {
     sequelize,
-    modelName: 'Equiments',
+    modelName: 'Equipments',
     underscored: true,
     underscoreAll: true,
     createdAt: "created_at",
     updatedAt: "updated_at"
   });
-  return Equiments;
+  return Equipments;
 };

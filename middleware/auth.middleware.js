@@ -23,9 +23,11 @@ module.exports = function authenticateToken(req, res, next) {
             return res.status(403).json({ success: false, message: "ไม่สามารถเข้าสู่ระบบได้ ติดต่อผู้ดูแลระบบ" });
         }
 
+        // console.log(user);
+
         req.user = user;
 
-        console.log(req.user);
+        // console.log(req.user);
 
         next();
     });

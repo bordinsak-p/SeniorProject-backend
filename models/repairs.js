@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     user_id: DataTypes.INTEGER,
     equipmentment_id: DataTypes.INTEGER,
     request_date: DataTypes.DATE,
+    // image: DataTypes.STRING,
     description: DataTypes.STRING,
     status: DataTypes.STRING
   }, {

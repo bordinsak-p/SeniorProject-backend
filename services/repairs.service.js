@@ -16,18 +16,32 @@ module.exports = class RepairsServices {
 
             const equipmentId = id
             const userId = accessToken.id
-
-            console.log(req.body);
+            const { description, status } = req.body
 
             try {
                 const query = await db.Equipments.findByPk(equipmentId);
 
                 if(!query) return res.status(404).json({ success: false, message: "ไม่พบข้อมูลครุภัณฑ์" });
                 
+                const result = await db.Repairs.create(
+                    {
+                        user_id: userId,
+                        equipmentment_id: equipmentId,
+                        request_date: new Date(),
+                        description: description,
+                        status: status
+                    }
+                );
 
+                res.status(201).json({ success: true, message: "บันทึกข้อมูลสำเร็จ", results: result });
+                
             } catch (error) {
-                console.log(error);
+                res.status(500).json({ success: false, message: "เกิดข้อมผิดพลาดในการบันทึกข้อมูล", error: error.message });
             }
         });
+    }
+
+    editRepairs(req, res, data, accessToken) {
+
     }
 }

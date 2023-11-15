@@ -22,13 +22,7 @@ module.exports = function authenticateToken(req, res, next) {
         if (err) {
             return res.status(403).json({ success: false, message: "ไม่สามารถเข้าสู่ระบบได้ กรุณาเข้าสู่ระบบใหม่อีกครั้ง" });
         }
-
-        // console.log(user);
-
         req.user = user;
-
-        // console.log(req.user);
-
         next();
     });
 }

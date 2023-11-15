@@ -53,8 +53,17 @@ router.post("/addRepairs/:id", auth, async (req, res) => {
     }
 }); 
 
-router.put("/editRepairs", auth, async (req, res) => {
-    res.send("editRepairs")
+router.put("/editRepairs/:id", auth, async (req, res) => {
+    try {
+        const data = await db.Repairs.findOne({
+            where: {
+                id: req.params.id
+            }
+        })
+        
+    } catch (error) {
+        res.status(500).json({ success: false, message: "เกิดข้อมผิดพลาดกรุราติดต่อผู้ดูแลระบบ", error: error.message })        
+    }
 }); 
 
 router.delete("/delRepairs/:id", auth, async (req, res) => {

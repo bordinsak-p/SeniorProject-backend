@@ -5,7 +5,7 @@ const db = require("../models");
 const multerConfig = require("./multer.config");
 const upload = multer(multerConfig.config).single(multerConfig.keyUpload);
 
-module.exports = class ShareServices {
+module.exports = class EquipmentsServices {
     checkImageAndUpdate(req, res, data) {
         upload(req, res, async (next) => {
             const transaction = await db.sequelize.transaction();

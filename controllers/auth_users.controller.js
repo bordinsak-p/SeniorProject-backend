@@ -71,8 +71,8 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ success: false, message: "ไม่พบชื่อผู้ใช้ของท่าน" });
 
     // สร้าง jwt token
-    const { username, role } = user;
-    const token = jwt.sign({ username, role }, secretKey["secretKey"], {
+    const { id, username, role } = user;
+    const token = jwt.sign({ id, username, role }, secretKey["secretKey"], {
       expiresIn: "2h",
     });
 

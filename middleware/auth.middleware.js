@@ -6,7 +6,7 @@ module.exports = function authenticateToken(req, res, next) {
 
     // ตรวจสอบว่ามี Authorization header หรือไม่
     if (!authHeader) {
-        return res.status(401).json({ success: false, message: "ไม่สามารถเข้าถึงข้อมูลได้" });
+        return res.status(401).json({ success: false, message: "ไม่สามารถเข้าเข้าสู่ระบบได้ กรุณาเข้าสู่ระบบใหม่อีกครั้ง" });
     }
 
     // แยก Authorization header เพื่อดึง token ออกมา
@@ -20,7 +20,7 @@ module.exports = function authenticateToken(req, res, next) {
     // ตรวจสอบ token โดยใช้ jwt.verify
     jwt.verify(token, secretKey['secretKey'], (err, user) => {
         if (err) {
-            return res.status(403).json({ success: false, message: "ไม่สามารถเข้าสู่ระบบได้ ติดต่อผู้ดูแลระบบ" });
+            return res.status(403).json({ success: false, message: "ไม่สามารถเข้าสู่ระบบได้ กรุณาเข้าสู่ระบบใหม่อีกครั้ง" });
         }
 
         // console.log(user);

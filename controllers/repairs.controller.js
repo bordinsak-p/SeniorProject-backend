@@ -7,6 +7,7 @@ const multerConfig = require("../services/multer.config");
 const path = require("path");
 const fs = require("fs");
 const upload = multer(multerConfig.config).single(multerConfig.keyUpload);
+const repairsService = require("../services/repairs.service")
 
 router.get("/getRepairs", auth, async (req, res) => {
     try {
@@ -42,8 +43,14 @@ router.get("/getRepairsForPms", auth, async (req, res) => {
     }
 }); 
 
-router.post("/addRepairs", auth, async (req, res) => {
-    res.send("addRepairs")
+router.post("/addRepairs/:id", auth, async (req, res) => {
+    const service = new repairsService();
+    const accessToken = req.user;
+    try {
+        service.addRepairs(req, res, req.params.id, accessToken);
+    } catch (error) {
+        res.status(500).json({ success: false, message: "เกิดข้อมผิดพลาดกรุราติดต่อผู้ดูแลระบบ", error: error.message })        
+    }
 }); 
 
 router.put("/editRepairs", auth, async (req, res) => {

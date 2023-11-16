@@ -4,10 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const secretKey = require("../config/token.config.json");
 
-// จัดการส่งข้อมูลแบบ formdata
-const multer = require("multer");
-
-// import model เรียกใช้งาน การ conncect database
+// import model เรียกใช้งานการ conncect database
 const db = require("../models");
 
 // ================ register ================

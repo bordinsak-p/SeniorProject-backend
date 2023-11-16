@@ -42,6 +42,45 @@ module.exports = class RepairsServices {
     }
 
     editRepairs(req, res, data, accessToken) {
+        upload(req, res, async (next) => {
+            if (next instanceof multer.MulterError) {
+                console.log(`error: ${JSON.stringify(next)}`);
+                return res.status(500).json({ message: next });
+            }
+            
+            if (req.file) {
+                if (data.image) {
+                    fs.unlink(path.join(__dirname, "../images", data.image), (err) => {
+                        if (err) {
+                            console.log("ไม่สามารถลบไฟล์ได้ :", err);
+                        } else {
+                            console.log("ลบไฟล์สำเร็จ");
+                        }
+                    })
+                }
+            }
 
+            const { description, status } = req.body
+
+            try {
+                const result = await db.Repairs.update({
+                   description: description,
+                   status: status 
+                }, {
+                    where: {
+                        id: data.id
+                    }
+                });
+
+                if (result > 0) {
+                    const resultUpd = await db.Repairs.findByPk(data.id);
+                    res.status(200).json({ success: true, message: "แก้ไขข้อมูลสำเร็จ", results: resultUpd })
+                } else {
+                    throw new Error("ไม่สามารถแก้ไขข้อมูลได้");
+                }
+            } catch (error) {
+                res.status(500).json({ success: false, message: "เกิดข้อมผิดพลาดในการบันทึกข้อมูล", error: error.message });
+            }
+        });
     }
 }

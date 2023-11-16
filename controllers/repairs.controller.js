@@ -3,11 +3,9 @@ const router = express.Router();
 const multer = require("multer");
 const db = require("../models");
 const auth = require("../middleware/auth.middleware");
-const multerConfig = require("../services/multer.config");
 const path = require("path");
 const fs = require("fs");
-const upload = multer(multerConfig.config).single(multerConfig.keyUpload);
-const repairsService = require("../services/repairs.service")
+const repairsService = require("../services/repairs.service");
 
 router.get("/getRepairs", auth, async (req, res) => {
     try {
@@ -46,7 +44,7 @@ router.get("/getRepairsForPms", auth, async (req, res) => {
 router.post("/addRepairs/:id", auth, async (req, res) => {
     const service = new repairsService();
     const accessToken = req.user;
-    try {
+    try {ต
         service.addRepairs(req, res, req.params.id, accessToken);
     } catch (error) {
         res.status(500).json({ success: false, message: "เกิดข้อมผิดพลาดกรุราติดต่อผู้ดูแลระบบ", error: error.message })        
@@ -54,13 +52,14 @@ router.post("/addRepairs/:id", auth, async (req, res) => {
 }); 
 
 router.put("/editRepairs/:id", auth, async (req, res) => {
+    const service = new repairsService()
     try {
         const data = await db.Repairs.findOne({
             where: {
                 id: req.params.id
             }
         })
-        
+        service.editRepairs(req, res, data);
     } catch (error) {
         res.status(500).json({ success: false, message: "เกิดข้อมผิดพลาดกรุราติดต่อผู้ดูแลระบบ", error: error.message })        
     }

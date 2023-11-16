@@ -44,7 +44,7 @@ router.get("/getRepairsForPms", auth, async (req, res) => {
 router.post("/addRepairs/:id", auth, async (req, res) => {
     const service = new repairsService();
     const accessToken = req.user;
-    try {ต
+    try {
         service.addRepairs(req, res, req.params.id, accessToken);
     } catch (error) {
         res.status(500).json({ success: false, message: "เกิดข้อมผิดพลาดกรุราติดต่อผู้ดูแลระบบ", error: error.message })        

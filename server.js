@@ -14,8 +14,9 @@ app.use(cors({
 }))
 
 // route
-// authen
+// authen & users
 app.use(require('./controllers/auth_users.controller'))
+app.use(require('./controllers/users.controller'))
 
 // equipemnt
 app.use(require('./controllers/equipment.controller'))

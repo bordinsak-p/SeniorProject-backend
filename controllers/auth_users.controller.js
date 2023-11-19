@@ -9,7 +9,7 @@ const db = require("../models");
 
 // ================ register ================
 router.post("/register", async (req, res) => {
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(10)
     const hashPassword = await bcrypt.hash(req.body.password, salt);
 
     const setUsersData = {
@@ -22,7 +22,7 @@ router.post("/register", async (req, res) => {
     };
 
     const haveEmail = await db.Users.findOne({
-        where: { email: setUsersData.email },
+        where: { email: setUsersData.email }
     });
     if (haveEmail)
         return res

@@ -9,7 +9,7 @@ module.exports = class EquipmentsServices {
     checkImageAndUpdate(req, res, data) {
         upload(req, res, async (next) => {
             const transaction = await db.sequelize.transaction();
-            const { locationname, branchinfo, roomnumber, equipmentname, description } = req.body
+            const { locationname, branchinfo, roomnumber, equipmentid, equipmentname, description } = req.body
 
             if (next instanceof multer.MulterError) {
                 console.log(`error: ${JSON.stringify(next)}`);
@@ -52,6 +52,7 @@ module.exports = class EquipmentsServices {
 
                 // update table equiment
                 const [updEequipment] = await db.Equipments.update({
+                    // equipment_id: equipmentid,
                     equipment_name: equipmentname,
                     description: description,
                     image: req.file ? req.file.filename : undefined,

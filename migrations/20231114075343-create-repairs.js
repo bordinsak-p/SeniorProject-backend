@@ -23,9 +23,9 @@ module.exports = {
           key: "id",
         },
       },
-      // image: {
-      //   type: Sequelize.STRING
-      // },
+      image: {
+        type: Sequelize.STRING
+      },
       request_date: {
         type: Sequelize.DATE
       },

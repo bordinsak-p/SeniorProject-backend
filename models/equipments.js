@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Equipments.init({
+    equipment_id: DataTypes.STRING,
     equipment_name: DataTypes.STRING,
     location_id: DataTypes.INTEGER,
     description: DataTypes.STRING,

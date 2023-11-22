@@ -7,22 +7,52 @@ const multerConfig = require("../services/multer.config");
 const path = require("path");
 const fs = require("fs");
 const upload = multer(multerConfig.config).single(multerConfig.keyUpload);
-const equipment = require('../services/equipment.service')
+const equipment = require('../services/equipment.service');
+const { Op } = require('sequelize');
+
 
 router.get("/getEquipment", auth, async (req, res) => {
     try {
+        const { equipmentId, equipmentName, locationName, branchInfo, roomNumber, budgetYear } = req.query;
 
-        let offset = 10;
-        let limit = 5;
+        const whereCondition = {};
+
+        if (equipmentId) {
+            whereCondition.equipment_id = { [Op.like]: `%${equipmentId}%` };
+        }
+
+        if (equipmentName) {
+            whereCondition.equipment_name = { [Op.like]: `%${equipmentName}%` };
+        }
+
+        if (budgetYear) {
+            whereCondition.budget_year = { [Op.like]: `%${budgetYear}%` };
+        }
+
+        if (locationName) {
+            whereCondition['$Location.location_name$'] = { [Op.like]: `%${locationName}%` };
+        }
+
+        if (branchInfo) {
+            whereCondition['$Location.branch_info$'] = { [Op.like]: `%${branchInfo}%` };
+        }
+
+        if (roomNumber) {
+            whereCondition['$Location.room_number$'] = { [Op.like]: `%${roomNumber}%` };
+        }
+
+        const order = [['id', 'DESC']];
 
         const { rows, count } = await db.Equipments.findAndCountAll({
-            order: [
-                ['id', 'DESC'],
-            ]
-        }, { offset: offset, limit: limit });
+            order,
+            include: [{
+                model: db.Locations,
+                attributes: ['location_name', 'branch_info', 'room_number'],
+            }],
+            where: whereCondition,
+        });
 
-        res.status(200)
-            .json({ success: true, count: count, offset: offset, limit: limit, results: rows })
+        res.status(200).json({ success: true, count, results: rows });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -54,7 +84,7 @@ router.post("/addEquipment", auth, async (req, res) => {
             return res.status(500).json({ message: next });
         }
 
-        const { locationname, branchinfo, roomnumber, equipmentname, description } = req.body;
+        const { locationname, branchinfo, roomnumber, equipmentid, equipmentname, description } = req.body;
 
         const transaction = await db.sequelize.transaction();
 
@@ -66,6 +96,7 @@ router.post("/addEquipment", auth, async (req, res) => {
             }, { transaction });
 
             const equ = await db.Equipments.create({
+                equipment_id: equipmentid,
                 equipment_name: equipmentname,
                 location_id: loc["dataValues"].id,
                 description: description,

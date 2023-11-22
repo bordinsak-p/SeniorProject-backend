@@ -13,6 +13,8 @@ app.use(cors({
     allowedHeaders: "Content-Type,Authorization", // กำหนด HTTP headers ที่อนุญาต
 }))
 
+app.use("/images", express.static("images")); 
+
 // route
 // authen & users
 app.use(require('./controllers/auth_users.controller'))

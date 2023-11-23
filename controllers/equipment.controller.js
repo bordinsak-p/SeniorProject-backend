@@ -32,12 +32,23 @@ router.get("/getEquipment", auth, async (req, res) => {
         //     where
         // (`Equipments`.`budget_year` >= '2023-11-22 07:00:00' or `Equipments`.`budget_year` <= '2023-11-22 07:00:00')
         
+        // if (budgetYear != null) {
+        //     whereCondition.budget_year = { 
+        //         [Op.and]: [
+        //             { [Op.gte]: new Date(budgetYear) },
+        //             { [Op.lte]: new Date(budgetYear) }
+        //         ]
+        //     };
+        // }
+
         if (budgetYear != null) {
-            whereCondition.budget_year = { 
-                [Op.or]: [
-                    { [Op.gte]: new Date(budgetYear) },
-                    { [Op.lte]: new Date(budgetYear) }
-                ]
+            const startDate = new Date(budgetYear);
+            const endDate = new Date(budgetYear);
+            endDate.setHours(23, 59, 59, 999); // Set เวลาเป็นสิ้นสุดของวัน
+        
+            whereCondition.budget_year = {
+                [Op.gte]: startDate,
+                [Op.lte]: endDate
             };
         }
 

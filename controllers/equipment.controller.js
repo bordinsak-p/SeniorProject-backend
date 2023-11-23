@@ -12,7 +12,7 @@ const { Op } = require('sequelize');
 
 
 router.get("/getEquipment", auth, async (req, res) => {
-    try {
+    try {   
         const { equipmentId, equipmentName, locationName, branchInfo, roomNumber, budgetYear } = req.query;
 
         const whereCondition = {};
@@ -25,8 +25,20 @@ router.get("/getEquipment", auth, async (req, res) => {
             whereCondition.equipment_name = { [Op.like]: `%${equipmentName}%` };
         }
 
+
+        // ใน Sequelize, การใช้ Op.gte และ Op.lte ในกรณีที่ต้องการดึงข้อมูลที่มีช่วงวันที่ที่กำหนดอาจจะต้องปรับเปลี่ยนการใช้คุณลักษณะของ where clause ในการสร้าง query เพื่อให้ได้ผลลัพธ์ที่ถูกต้อง.
+        // ในกรณีนี้, คุณสามารถใช้ Sequelize literal และ operator or เพื่อสร้างคำสั่ง where ที่ถูกต้อง
+
+        //     where
+        // (`Equipments`.`budget_year` >= '2023-11-22 07:00:00' or `Equipments`.`budget_year` <= '2023-11-22 07:00:00')
+        
         if (budgetYear != null) {
-            whereCondition.budget_year = { [Op.like]: `%${budgetYear}%` };
+            whereCondition.budget_year = { 
+                [Op.or]: [
+                    { [Op.gte]: new Date(budgetYear) },
+                    { [Op.lte]: new Date(budgetYear) }
+                ]
+            };
         }
 
         if (locationName != null) {
@@ -101,7 +113,7 @@ router.post("/addEquipment", auth, async (req, res) => {
                 location_id: loc["dataValues"].id,
                 description: description,
                 image: req.file ? req.file.filename : undefined,
-                buget_year: new Date(),
+                budget_year: new Date(),
             }, { transaction });
 
             // Commit transaction

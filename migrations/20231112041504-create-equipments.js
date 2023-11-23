@@ -28,7 +28,7 @@ module.exports = {
       image: {
         type: Sequelize.STRING
       },
-      buget_year: {
+      budget_year: {
         type: Sequelize.DATE
       },
       created_at: {

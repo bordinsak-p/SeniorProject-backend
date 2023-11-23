@@ -56,7 +56,7 @@ module.exports = class EquipmentsServices {
                     equipment_name: equipmentname,
                     description: description,
                     image: req.file ? req.file.filename : undefined,
-                    buget_year: new Date(),
+                    budget_year: new Date(),
                 }, {
                     where: {
                         id: data.id

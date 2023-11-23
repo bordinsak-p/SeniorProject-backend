@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     location_id: DataTypes.INTEGER,
     description: DataTypes.STRING,
     image: DataTypes.STRING,
-    buget_year: DataTypes.DATE,
+    budget_year: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'Equipments',

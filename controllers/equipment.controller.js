@@ -17,27 +17,27 @@ router.get("/getEquipment", auth, async (req, res) => {
 
         const whereCondition = {};
 
-        if (equipmentId) {
+        if (equipmentId != null) {
             whereCondition.equipment_id = { [Op.like]: `%${equipmentId}%` };
         }
 
-        if (equipmentName) {
+        if (equipmentName != null) {
             whereCondition.equipment_name = { [Op.like]: `%${equipmentName}%` };
         }
 
-        if (budgetYear) {
+        if (budgetYear != null) {
             whereCondition.budget_year = { [Op.like]: `%${budgetYear}%` };
         }
 
-        if (locationName) {
+        if (locationName != null) {
             whereCondition['$Location.location_name$'] = { [Op.like]: `%${locationName}%` };
         }
 
-        if (branchInfo) {
+        if (branchInfo != null) {
             whereCondition['$Location.branch_info$'] = { [Op.like]: `%${branchInfo}%` };
         }
 
-        if (roomNumber) {
+        if (roomNumber != null) {
             whereCondition['$Location.room_number$'] = { [Op.like]: `%${roomNumber}%` };
         }
 

@@ -6,7 +6,7 @@ module.exports = function authenticateToken(req, res, next) {
 
     // ตรวจสอบว่ามี Authorization header หรือไม่
     if (!authHeader) {
-        return res.status(401).json({ success: false, message: "ไม่สามารถเข้าถึงข้อมูลได้ กรุณาเข้าสู่ระบบใหม่อีกครั้ง" });
+        return res.status(401).json({ success: false, message: "ไม่สามารถเข้าถึงข้อมูลได้ กรุณายืนยันตัวตนและเข้าสู่ระบบใหม่อีกครั้ง" });
     }
 
     // แยก Authorization header เพื่อดึง token ออกมา

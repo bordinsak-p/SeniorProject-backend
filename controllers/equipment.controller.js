@@ -25,22 +25,8 @@ router.get("/getEquipment", auth, async (req, res) => {
             whereCondition.equipment_name = { [Op.like]: `%${equipmentName}%` };
         }
 
-
-        // ใน Sequelize, การใช้ Op.gte และ Op.lte ในกรณีที่ต้องการดึงข้อมูลที่มีช่วงวันที่ที่กำหนดอาจจะต้องปรับเปลี่ยนการใช้คุณลักษณะของ where clause ในการสร้าง query เพื่อให้ได้ผลลัพธ์ที่ถูกต้อง.
-        // ในกรณีนี้, คุณสามารถใช้ Sequelize literal และ operator or เพื่อสร้างคำสั่ง where ที่ถูกต้อง
-
-        //     where
-        // (`Equipments`.`budget_year` >= '2023-11-22 07:00:00' or `Equipments`.`budget_year` <= '2023-11-22 07:00:00')
-        
-        // if (budgetYear != null) {
-        //     whereCondition.budget_year = { 
-        //         [Op.and]: [
-        //             { [Op.gte]: new Date(budgetYear) },
-        //             { [Op.lte]: new Date(budgetYear) }
-        //         ]
-        //     };
-        // }
-
+        // แก้ปัญหา query วันที่ไม่เจอ
+        // เกิดจาก sequilize generate format วันที่ผิด
         if (budgetYear != null) {
             const startDate = new Date(budgetYear);
             const endDate = new Date(budgetYear);
@@ -85,6 +71,10 @@ router.get("/getEquipmentForPrm/:id", auth, async (req, res) => {
 
     try {
         const result = await db.Equipments.findOne({
+            include: [{
+                model: db.Locations,
+                attributes: ['location_name', 'branch_info', 'room_number'],
+            }],
             where: {
                 id: req.params.id
             }
@@ -192,9 +182,51 @@ router.delete("/delEquipment/:id", auth, async (req, res) => {
         if (result === 1) {
             return res.status(204).json({ success: true, message: "ลบข้อมูลสำเร็จ" });
         } else {
-            return res.status(404).json({ success: false, message: "ไม่พบข้อมูลสินค้า" });
+            return res.status(404).json({ success: false, message: "ไม่พบข้อมูลครุภัณฑ์" });
         }
 
+    } catch (error) {
+        res.status(500).json({ success: false, message: "ไม่พบข้อมูลครุภัณฑ์", error: error.message });
+    }
+});
+
+router.delete("/delEquipments", auth, async (req, res) => {
+    try {
+
+        const ids = req.query.ids.split(',').map(id => parseInt(id));
+        const query = await db.Equipments.findAll({
+            where: {
+              id: ids
+            }
+        });
+      
+        if (!query || query.length === 0) {
+            return res.status(404).json({ success: false, message: "ไม่พบข้อมูลครุภัณฑ์" });
+        }
+      
+        for (const equipment of query) {
+            if (equipment.image) {
+            fs.unlink(path.join(__dirname, "../images", equipment.image), (err) => {
+                if (err) {
+                    console.log("ไม่สามารถลบไฟล์ได้ :", err);
+                } else {
+                    console.log("ลบไฟล์สำเร็จ");
+                }
+            });
+            }
+        }
+    
+        const result = await db.Equipments.destroy({
+            where: {
+                id: ids,
+            }
+        });
+      
+        if (result >= 1) {
+            return res.status(204).json({ success: true, message: "ลบข้อมูลสำเร็จ" });
+        } else {
+            return res.status(404).json({ success: false, message: "ไม่พบข้อมูลครุภัณฑ์" });
+        }
     } catch (error) {
         res.status(500).json({ success: false, message: "ไม่พบข้อมูลครุภัณฑ์", error: error.message });
     }

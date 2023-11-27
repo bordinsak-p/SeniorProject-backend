@@ -128,4 +128,46 @@ router.delete("/delUsers/:id", auth, async (req, res) => {
     }
 }); 
 
+//Reset Password
+router.post('/resetPassword', auth, async (req, res) => { 
+    try {
+        const { email, password } = req.body;
+        // เช็ค mail
+        const user = await db.Users.findOne({
+            where: {
+                email: email
+            }
+        });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'ไม่พบอีเมล์นี้' });
+        }
+
+        // hash the mother fucking password 
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // แก้ไขการhashก่อนเพิ่มลง DB
+        const updatedUser = await db.Users.update(
+            { password: hashedPassword },
+            {
+                where: {
+                    email: email
+                }
+            }
+        );
+
+        // เช็ค
+        if (updatedUser[0] === 1) {
+            return res.status(200).json({ success: true, message: 'รีเซ็ทรหัสผ่านสำเร็จ' });
+        } else {
+            return res.status(500).json({ success: false, message: 'รีเซ็ตรหัสผ่านไม่สำเร็จ' });
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'เกิดข้อผิดพลาดไม่สามารถรีเซ็ทรหัสผ่านได้', error: error.message });
+    }
+});
+
+
 module.exports  = router;

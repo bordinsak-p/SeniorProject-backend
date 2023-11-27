@@ -50,10 +50,10 @@ router.post("/login", async (req, res) => {
         const user = await db.Users.findOne({ where: { email: email } });
 
         // ถ้าไม่เจอข้อมูล
-        if (!user)
-            return res
-                .status(401)
-                .json({ success: false, message: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" });
+        if (!user || !user["password"]) 
+        return res
+            .status(401)
+            .json({ success: false, message: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" });
 
         // decode password จาก req กับ db
         const isValidPassword = await bcrypt.compare(password, user["password"]);

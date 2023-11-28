@@ -129,7 +129,7 @@ router.delete("/delUsers/:id", auth, async (req, res) => {
 }); 
 
 //Reset Password
-router.post('/resetPassword', auth, async (req, res) => { 
+router.post('/resetPassword', async (req, res) => { 
     try {
         const { email, password } = req.body;
         // เช็ค mail

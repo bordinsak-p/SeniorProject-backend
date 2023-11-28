@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require("../models");
 const auth = require("../middleware/auth.middleware");
 const bcrypt = require("bcrypt");
+const { Op } = require('sequelize');
 
 // Add User
 router.post('/addUsers', async (req, res) => {
@@ -35,18 +36,50 @@ router.post('/addUsers', async (req, res) => {
 //Get Users 
 router.get("/getUsers", auth, async (req, res) => {
     try{
-        const query = await db.Users.findAll({
-            order:[
-                ['id', 'ASC']
-            ]
-        })
+        const { firstname, lastname, email, role, createAt } = req.query
 
-        if(!query) return res.status(404).json({success:false, message:"ไม่พบข้อมูลสมาชิก"})
+        const whereCondi = {}
 
-        res.status(200).json({success:true, results:query}) 
+        if(firstname != null) {
+            whereCondi.firstname = { [Op.like]: `%${firstname}%` }
+        }
+        
+        if(lastname != null) {
+            whereCondi.lastname = { [Op.like]: `%${lastname}%` }
+        }
+        
+        if(email != null) {
+            whereCondi.email = { [Op.like]: `%${email}%` }
+        }
+        
+        if(role != null) {
+            whereCondi.role = { [Op.like]: `%${role}%` }
+        }
+        
+        if(createAt != null) {
+            const startDate = new Date(createAt);
+            const endDate = new Date(createAt);
+            endDate.setHours(23, 59, 59, 999); // Set เวลาเป็นสิ้นสุดของวัน
+        
+            whereCondi.createAt = {
+                [Op.gte]: startDate,
+                [Op.lte]: endDate
+            };
+        }
+
+        const order = [
+            ['id', 'DESC']
+        ]
+
+        const { rows, count } = await db.Users.findAndCountAll({
+            order,
+            where: whereCondi,
+        });
+
+        res.status(200).json({success: true, count, results: rows}) 
 
     } catch(error) {
-        res.status(500).json({success:false, message:"เกิดข้อผิดพลาด", error:error.message})
+        res.status(500).json({success: false, message:"เกิดข้อผิดพลาด", error:error.message})
     }
 });
 

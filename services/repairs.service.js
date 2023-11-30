@@ -26,10 +26,11 @@ module.exports = class RepairsServices {
                 const result = await db.Repairs.create(
                     {
                         user_id: userId,
-                        equipmentment_id: equipmentId,
+                        equipmentpk_id: equipmentId,
                         request_date: new Date(),
                         description: description,
-                        status: status
+                        status: status,
+                        image: req.file ? req.file.filename : undefined,
                     }
                 );
 
@@ -65,7 +66,8 @@ module.exports = class RepairsServices {
             try {
                 const result = await db.Repairs.update({
                    description: description,
-                   status: status 
+                   status: status,
+                   image: req.file ? req.file.filename : undefined, 
                 }, {
                     where: {
                         id: data.id

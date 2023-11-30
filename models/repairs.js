@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Repairs.init({
     user_id: DataTypes.INTEGER,
-    equipmentment_id: DataTypes.INTEGER,
+    equipmentpk_id: DataTypes.INTEGER,
     request_date: DataTypes.DATE,
     image: DataTypes.STRING,
     description: DataTypes.STRING,

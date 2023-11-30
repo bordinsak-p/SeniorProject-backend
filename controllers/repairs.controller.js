@@ -10,7 +10,7 @@ const { Op } = require('sequelize');
 
 router.get("/getRepairs", auth, async (req, res) => {
     try {
-        const { username, firstname, lastname, status, requestDate, equipmentName, budgetYear } = req.query
+        const { username, firstname, lastname, status, requestdate, equipmentname, budgetyear } = req.query
 
         const whereCondi = {}
 
@@ -26,13 +26,13 @@ router.get("/getRepairs", auth, async (req, res) => {
             whereCondi['$users.lastname$'] = { [Op.like]: `%${lastname}%` }
         }
         
-        if (equipmentName != null) {
-            whereCondi['$equipments.equipment_name$'] = { [Op.like]: `%${equipmentName}%` }
+        if (equipmentname != null) {
+            whereCondi['$equipments.equipment_name$'] = { [Op.like]: `%${equipmentname}%` }
         }
 
-        if (budgetYear != null) {
-            const startDate = new Date(budgetYear);
-            const endDate = new Date(budgetYear);
+        if (budgetyear != null) {
+            const startDate = new Date(budgetyear);
+            const endDate = new Date(budgetyear);
             endDate.setHours(23, 59, 59, 999);
             
             whereCondi['$equipments.budget_year$'] = { 
@@ -45,9 +45,9 @@ router.get("/getRepairs", auth, async (req, res) => {
             whereCondi.status = { [Op.like]: `%${status}%` }
         }
 
-        if (requestDate != null) {
-            const startDate = new Date(requestDate);
-            const endDate = new Date(requestDate);
+        if (requestdate != null) {
+            const startDate = new Date(requestdate);
+            const endDate = new Date(requestdate);
             endDate.setHours(23, 59, 59, 999);
 
             whereCondi.request_date = {

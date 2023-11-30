@@ -6,27 +6,88 @@ const auth = require("../middleware/auth.middleware");
 const path = require("path");
 const fs = require("fs");
 const repairsService = require("../services/repairs.service");
+const { Op } = require('sequelize');
 
 router.get("/getRepairs", auth, async (req, res) => {
     try {
-        const query = await db.Repairs.findAll({
-            order: [
-                ['id', 'DESC']
-            ]
-        })
+        const { username, firstname, lastname, status, requestDate, equipmentName, budgetYear } = req.query
 
-        if(!query) return res.status(404).json({ success: false, message: "ไม่พบข้อมูลบันทึกการแจ้งซ่อม"});
+        const whereCondi = {}
 
-        res.status(200).json({ success: true, resutls: query })
+        if (username != null) {
+            whereCondi['$users.username$'] = { [Op.like]: `%${username}%` }
+        }
+
+        if (firstname != null) {
+            whereCondi['$users.firstname$'] = { [Op.like]: `%${firstname}%` }
+        }
+
+        if (lastname != null) {
+            whereCondi['$users.lastname$'] = { [Op.like]: `%${lastname}%` }
+        }
+
+        if (status != null) {
+            whereCondi.status = { [Op.like]: `%${status}%` }
+        }
+
+        if (requestDate != null) {
+            const startDate = new Date(requestDate);
+            const endDate = new Date(requestDate);
+            endDate.setHours(23, 59, 59, 999);
+
+            whereCondi.request_date = {
+                [Op.gte]: startDate,
+                [Op.lte]: endDate
+            };
+        }
+
+        const order = [
+            ['id', 'DESC']
+        ]
+
+        const { rows, count } = await db.Repairs.findAndCountAll({
+            order,
+            include: [
+                {
+                    model: db.Users,
+                    attributes: ['firstname', 'lastname', 'username'],
+                    as: 'users'
+                },
+                {
+                    model: db.Equipments,
+                    attributes: ['equipment_id', 'equipment_name', 'budget_year'],
+                    as: 'equipments'
+                }
+            ],
+            where: whereCondi,
+        });
+
+        res.status(200).json({ success: true, count, results: rows });
 
     } catch (error) {
         res.status(500).json({ success: false, message: "เกิดข้อมผิดพลาดกรุราติดต่อผู้ดูแลระบบ", error: error.message })
     }
-}); 
+});
 
-router.get("/getRepairsForPms", auth, async (req, res) => {
+
+router.get("/getRepairsForPms/:id", auth, async (req, res) => {
     try {
         const query = await db.Repairs.findOne({
+            order: [
+                ['id', 'DESC']
+            ],
+            include: [
+                {
+                    model: db.Users,
+                    attributes: ['firstname', 'lastname', 'username'],
+                    as: 'users'
+                },
+                {
+                    model: db.Equipments,
+                    attributes: ['equipment_id', 'equipment_name', 'budget_year'],
+                    as: 'equipments'
+                }
+            ],
             where: {
                 id: req.params.id
             }

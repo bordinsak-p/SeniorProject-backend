@@ -25,6 +25,21 @@ router.get("/getRepairs", auth, async (req, res) => {
         if (lastname != null) {
             whereCondi['$users.lastname$'] = { [Op.like]: `%${lastname}%` }
         }
+        
+        if (equipmentName != null) {
+            whereCondi['$equipments.equipment_name$'] = { [Op.like]: `%${equipmentName}%` }
+        }
+
+        if (budgetYear != null) {
+            const startDate = new Date(budgetYear);
+            const endDate = new Date(budgetYear);
+            endDate.setHours(23, 59, 59, 999);
+            
+            whereCondi['$equipments.budget_year$'] = { 
+                [Op.gte]: startDate,
+                [Op.lte]: endDate
+            }
+        }
 
         if (status != null) {
             whereCondi.status = { [Op.like]: `%${status}%` }

@@ -10,7 +10,7 @@ const { Op } = require('sequelize');
 
 router.get("/getRepairs", auth, async (req, res) => {
     try {
-        const { username, firstname, lastname, status, requestdate, equipmentname, budgetyear } = req.query
+        const { username, firstname, lastname, status, requestdate, equipmentname, budgetyear, equipmentid } = req.query
 
         const whereCondi = {}
 
@@ -28,6 +28,21 @@ router.get("/getRepairs", auth, async (req, res) => {
         
         if (equipmentname != null) {
             whereCondi['$equipments.equipment_name$'] = { [Op.like]: `%${equipmentname}%` }
+        }
+       
+        if (equipmentid != null) {
+            whereCondi['$equipments.equipment_id$'] = { [Op.like]: `%${equipmentid}%` }
+        }
+
+        if (requestdate != null) {
+            const startDate = new Date(requestdate);
+            const endDate = new Date(requestdate);
+            endDate.setHours(23, 59, 59, 999);
+            
+            whereCondi.request_Date = { 
+                [Op.gte]: startDate,
+                [Op.lte]: endDate
+            }
         }
 
         if (budgetyear != null) {

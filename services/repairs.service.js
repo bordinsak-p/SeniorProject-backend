@@ -15,7 +15,7 @@ module.exports = class RepairsServices {
             }
 
             const equipmentId = id
-            const userId = accessToken.id
+            const userId = accessToken && accessToken.id;
             const { description, status } = req.body
 
             try {

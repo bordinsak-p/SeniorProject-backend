@@ -191,6 +191,50 @@ router.delete("/delRepairs/:id", auth, async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดไม่สามารถลบข้อมูลได้", error: error.message });
     }
-}); 
+});
+
+
+router.delete("/delRepairs", auth, async (req, res) => {
+    try {
+
+        const ids = req.query.ids.split(',').map(id => parseInt(id));
+        const query = await db.Repairs.findAll({
+            where: {
+              id: ids
+            }
+        });
+      
+        if (!query || query.length === 0) {
+            return res.status(404).json({ success: false, message: "ไม่พบข้อมูลบันทึกการแจ้งซ่อม" });
+        }
+      
+        for (const Repairs of query) {
+            if (Repairs.image) {
+            fs.unlink(path.join(__dirname, "../images", Repairs.image), (err) => {
+                if (err) {
+                    console.log("ไม่สามารถลบไฟล์ได้ :", err);
+                } else {
+                    console.log("ลบไฟล์สำเร็จ");
+                }
+            });
+            }
+        }
+    
+        const result = await db.Repairs.destroy({
+            where: {
+                id: ids,
+            }
+        });
+      
+        if (result >= 1) {
+            return res.status(204).json({ success: true, message: "ลบข้อมูลสำเร็จ" });
+        } else {
+            return res.status(404).json({ success: false, message: "ไม่พบข้อมูลบันทึกการแจ้งซ่อม"});
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: "ไม่พบข้อมูลบันทึกการแจ้งซ่อม", error: error.message });
+    }
+});
+
 
 module.exports = router;

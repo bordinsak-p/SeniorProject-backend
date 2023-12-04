@@ -36,7 +36,7 @@ router.post('/addUsers', async (req, res) => {
 //Get Users 
 router.get("/getUsers", auth, async (req, res) => {
     try{
-        const { firstname, lastname, email, role, createAt } = req.query
+        const { firstname, lastname, email, role, createdAt } = req.query
 
         const whereCondi = {}
 
@@ -56,12 +56,12 @@ router.get("/getUsers", auth, async (req, res) => {
             whereCondi.role = { [Op.like]: `%${role}%` }
         }
         
-        if(createAt != null) {
-            const startDate = new Date(createAt);
-            const endDate = new Date(createAt);
+        if(createdAt != null) {
+            const startDate = new Date(createdAt);
+            const endDate = new Date(createdAt);
             endDate.setHours(23, 59, 59, 999); // Set เวลาเป็นสิ้นสุดของวัน
         
-            whereCondi.createAt = {
+            whereCondi.created_at = {
                 [Op.gte]: startDate,
                 [Op.lte]: endDate
             };

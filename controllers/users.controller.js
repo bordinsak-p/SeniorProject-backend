@@ -151,7 +151,7 @@ router.delete("/delUsers/:id", auth, async (req, res) => {
         });
 
         if (result === 1) {
-            return res.status(204).json({ success: true, message: "ลบข้อมูลสำเร็จ" });
+            return res.status(200).json({ success: true, message: "ลบข้อมูลสำเร็จ" });
         } else {
             return res.status(404).json({ success: false, message: "ไม่พบข้อมูล" });
         }
@@ -159,7 +159,40 @@ router.delete("/delUsers/:id", auth, async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดไม่สามารถลบข้อมูลได้", error: error.message });
     }
-}); 
+});
+
+//Delete multiple users
+router.delete("/delUsers", auth, async (req, res) => {
+    try {
+        const userIds = req.query.id.split(',').map(id => parseInt(id));
+
+        const query = await db.Users.findAll({
+            where: {
+                id: userIds
+            }
+        });
+
+        if (!query || query.length === 0) {
+            return res.status(404).json({ success: false, message: "ไม่พบข้อมูล" });
+        }
+
+        const result = await db.Users.destroy({
+            where: {
+                id: userIds
+            }
+        });
+
+        if (result > 0) {
+            return res.status(200).json({ success: true, message: "ลบข้อมูลสำเร็จ" });
+        } else {
+            return res.status(404).json({ success: false, message: "ไม่พบข้อมูล" });
+        }
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: "เกิดข้อผิดพลาดไม่สามารถลบข้อมูลได้", error: error.message });
+    }
+});
+
 
 //Reset Password
 router.post('/resetPassword', async (req, res) => { 

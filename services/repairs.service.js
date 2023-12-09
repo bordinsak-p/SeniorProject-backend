@@ -29,7 +29,8 @@ module.exports = class RepairsServices {
                         equipmentpk_id: equipmentId,
                         request_date: new Date(),
                         description: description,
-                        status: status,
+                        // status: status,
+                        status: "รอรับเรื่อง",
                         image: req.file ? req.file.filename : undefined,
                     }
                 );

@@ -109,7 +109,7 @@ router.get("/getRepairsForPms/:id", auth, async (req, res) => {
             include: [
                 {
                     model: db.Users,
-                    attributes: ['firstname', 'lastname', 'username'],
+                    attributes: ['firstname', 'lastname', 'username', 'role'],
                     as: 'users'
                 },
                 {

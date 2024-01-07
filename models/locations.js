@@ -4,9 +4,7 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Locations extends Model {
-    static associate(models) {
-      // Locations.hasMany(models.Equiments, { foreignKey: 'location_id' });
-    }
+    static associate(models) {}
   }
   Locations.init({
     location_name: DataTypes.STRING,

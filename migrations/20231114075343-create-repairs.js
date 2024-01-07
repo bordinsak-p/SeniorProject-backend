@@ -21,6 +21,8 @@ module.exports = {
         references: {
           model: "Equipments",
           key: "id",
+          onDelete: 'CASCADE', // หรือ 'SET NULL' หรือ 'NO ACTION'
+          onUpdate: 'CASCADE', // หรือ 'SET NULL' หรือ 'NO ACTION'
         },
       },
       image: {

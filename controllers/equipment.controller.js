@@ -141,8 +141,9 @@ router.put("/editEquipment/:id", auth, async (req, res) => {
             }
         });
 
-        if (!data)
+        if (!data) {
             return res.status(404).json({ success: false, message: "ไม่พบข้อมูลครุภัณฑ์" });
+        }
 
         service.checkImageAndUpdate(req, res, data);
 
@@ -173,11 +174,21 @@ router.delete("/delEquipment/:id", auth, async (req, res) => {
             })
         }
  
+        const transaction = await db.sequelize.transaction();
+
+        await db.Locations.destroy({
+            where: {
+                id: req.params.id
+            }
+        }, { transaction });
+
         const result = await db.Equipments.destroy({
             where: {
                 id: req.params.id,
             }
         })
+
+  await transaction.commit();
 
         if (result === 1) {
             return res.status(204).json({ success: true, message: "ลบข้อมูลสำเร็จ" });
@@ -215,12 +226,20 @@ router.delete("/delEquipments", auth, async (req, res) => {
             });
             }
         }
+
+        const transaction = await db.sequelize.transaction();
+
+        await db.Locations.destroy({
+            where: {
+                id: ids
+            }
+        }, { transaction });
     
         const result = await db.Equipments.destroy({
             where: {
                 id: ids,
             }
-        });
+        }, { transaction });
       
         if (result >= 1) {
             return res.status(204).json({ success: true, message: "ลบข้อมูลสำเร็จ" });
